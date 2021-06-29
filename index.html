@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./css/style.css" />
+    <title>Document</title>
+  </head>
+  <body>
+    <header>Weather Dashborad</header>
+    <main class="container">
+      <!--Entier search area block-->
+      <section class="seacharea">
+        <h2 class="search-heading">Search For City:</h2>
+        <form action="">
+          <input id="input" type="text" placeholder="New Haven" /><br />
+          <button id="search-btn">Search</button>
+        </form>
+        <hr />
+        <!--Seach History side bar area-->
+        <div class="history">
+          <p id="hs-dsp" class="dsp"></p>
+        </div>
+      </section>
+
+      <!--Display Data Block-->
+      <section class="main-display">
+        <div class="datadisplay">
+          <h2 id="display-heading"></h2>
+          <p id="main-temp"></p>
+          <p id="main-wind"></p>
+          <p id="main-humid"></p>
+          <p id="main-uv">UV Index:</p>
+        </div>
+        <h2>5 - Day Forecast:</h2>
+        <!--Forcasst section-->
+        <div class="forcast">
+          <div class="block">
+            <h3 class="forcast-date">06/29/2021</h3>
+            <p>☁️</p>
+            <p>Temp: 74.01 F</p>
+            <p>Wind: 6.67 MPH</p>
+            <p>Humidity: 46 %</p>
+            <p>UV Index:</p>
+          </div>
+          <div class="block">
+            <h3 class="forcast-date">06/30/2021</h3>
+            <p>☁️</p>
+            <p>Temp: 74.01 F</p>
+            <p>Wind: 6.67 MPH</p>
+            <p>Humidity: 46 %</p>
+            <p>UV Index:</p>
+          </div>
+          <div class="block">
+            <h3 class="forcast-date">06/31/2021</h3>
+            <p>☁️</p>
+            <p>Temp: 74.01 F</p>
+            <p>Wind: 6.67 MPH</p>
+            <p>Humidity: 46 %</p>
+            <p>UV Index:</p>
+          </div>
+          <div class="block">
+            <h3 class="forcast-date">3/25/2021</h3>
+            <p>☁️</p>
+            <p>Temp: 74.01 F</p>
+            <p>Wind: 6.67 MPH</p>
+            <p>Humidity: 46 %</p>
+            <p>UV Index:</p>
+          </div>
+          <div class="block">
+            <h3 class="forcast-date">3/25/2021</h3>
+            <p>☁️</p>
+            <p>Temp: 74.01 F</p>
+            <p>Wind: 6.67 MPH</p>
+            <p>Humidity: 46 %</p>
+            <p>UV Index:</p>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script src="./js/script.js"></script>
+  </body>
+</html>
