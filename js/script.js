@@ -6,14 +6,17 @@ var mainHumid = document.getElementById("main-humid");
 var displayHeading = document.getElementById("display-heading");
 var history = document.getElementById("history");
 var hsDsp = document.getElementById("hs-dsp");
-var forcastBlock = document.querySelector(".block");
-
+var forcastArea = document.querySelector(".forecast");
 currentCity = "wolcott";
 var apiBase = "https://api.openweathermap.org/data/2.5/weather?q=";
 var apiKey = "&units=imperial&appid=6260169909dd4d4630bd110c87fff970";
+var mainDate = document.getElementById("main-date")
 
-// Fetched Data
+var date = moment().format("MM/D/YYYY")
+console.log(date)
 
+
+// Fetched Data for current weather information
 fetch(apiBase + currentCity + apiKey)
   .then(function (response) {
     return response.json();
@@ -21,14 +24,19 @@ fetch(apiBase + currentCity + apiKey)
   .then(function (data) {
     console.log(data);
 
-    //Current Location Weather
+    //Current Location Weather Display
     mainTempEl.textContent = "Temp: " + data.main.temp + "° F";
     mainWindEl.textContent = "Wind: " + data.wind.speed + " MPH";
     mainHumid.textContent = "Humidity: " + data.main.humidity + "%";
-    displayHeading.textContent = data.name + "☁️";
+    displayHeading.textContent = data.name;
+    mainDate.textContent = date
+    var disIcon = document.createElement("img");
+    disIcon.setAttribute(
+      "src",
+      "http://openweathermap.org/img/w/" + data.weather[0].icon + ".png"
+    );
+    displayHeading.append(disIcon);
   });
-
-//funtion to get data for API
 
 searchButtonEl.addEventListener("click", function (event) {
   city = inputField.value;
@@ -42,6 +50,7 @@ searchButtonEl.addEventListener("click", function (event) {
   }
 });
 
+//funtion to get data from API
 var getResults = function () {
   fetch(apiBase + city + apiKey)
     .then(function (response) {
@@ -52,11 +61,19 @@ var getResults = function () {
       mainTempEl.textContent = "Temp: " + data.main.temp + "° F";
       mainWindEl.textContent = "Wind: " + data.wind.speed + " MPH";
       mainHumid.textContent = "Humidity: " + data.main.humidity + "%";
-      displayHeading.textContent = data.name + "☁️";
+      displayHeading.textContent = data.name;
+      var disIcon = document.createElement("img");
+      disIcon.setAttribute(
+        "src",
+        "http://openweathermap.org/img/w/" + data.weather[0].icon + ".png"
+      );
+      displayHeading.append(disIcon);
 
       oneCallApi(data.coord.lat, data.coord.lon);
     });
 };
+
+//One call api with all the data both current and daily
 var oneCallApi = function (lat, lon) {
   var oneCallBase =
     "https://api.openweathermap.org/data/2.5/onecall?lat=" +
@@ -74,36 +91,38 @@ var oneCallApi = function (lat, lon) {
       getForcastResults(data);
     });
 };
+
 ///Function for setting 5 day forcast
 var getForcastResults = function (data) {
+  for (let i = 0; i < 5; i++) {
+    var castBlock = document.createElement("div");
+    castBlock.setAttribute("class", "block");
+    var forecastDateEl = document.createElement("h3");
+    var iconEl = document.createElement("img");
+    var tempEl = document.createElement("p");
+    var windEl = document.createElement("p");
+    var humidityEl = document.createElement("p");
+    var uvEl = document.createElement("p");
+    forecastDateEl.setAttribute("class", "forcast-date");
+    iconEl.setAttribute(
+      "src",
+      "http://openweathermap.org/img/w/" +
+        data.daily[0].weather[0].icon +
+        ".png"
+    );
+    forecastDateEl.textContent = date;
+    tempEl.textContent = "Temp: " + data.daily[i].temp.day + "° F";
+    windEl.textContent = "Wind: " + data.daily[i].wind_speed + " MPH";
+    humidityEl.textContent = "Humidity: " + data.daily[i].humidity + "%";
+    uvEl.textContent = "UV Index: " + data.daily[i].uvi;
 
-  for (let i = 0; i < 4; i++) {
-  var forecastDateEl = document.createElement("h3");
-  var iconEl = document.createElement("img");
-  var tempEl = document.createElement("p");
-  var windEl = document.createElement("p");
-  var humidityEl = document.createElement("p");
-  var uvEl = document.createElement("p");
-  forecastDateEl.setAttribute("class", "forcast-date");
-
-
-  iconEl.setAttribute(
-    "src",
-    "http://openweathermap.org/img/w/" + data.daily[0].weather[0].icon + ".png"
-  );
-
-  forecastDateEl.textContent = "02/05/2021";
-  tempEl.textContent = data.daily[i].temp.day;
-  windEl.textContent = data.daily[i].wind_speed;
-  humidityEl.textContent = data.daily[i].humidity;
-  uvEl.textContent = data.daily[i].uvi;
-
-  forcastBlock.append(forecastDateEl, iconEl, tempEl, windEl, humidityEl, uvEl);
-}
+    forcastArea.append(castBlock);
+    castBlock.append(forecastDateEl, iconEl, tempEl, windEl, humidityEl, uvEl);
+  }
 };
 
-var oldData = [];
 //save data to local storage
+var oldData = [];
 var saveSeachData = function () {
   newData = {
     text: city,
@@ -121,9 +140,29 @@ var loadData = function () {
     search = document.createElement("p");
     search.setAttribute("class", "dsp");
     search.textContent = oldData[i].text;
-    hsDsp.prepend(search);
+    hsDsp.append(search);
   }
 };
-
 loadData();
 
+// Code to search base on history
+hsDsp.addEventListener("click", function () {
+  newVal = oldData[0].text;
+  fetch(apiBase + newVal + apiKey)
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (data) {
+      console.log(data);
+      mainTempEl.textContent = "Temp: " + data.main.temp + "° F";
+      mainWindEl.textContent = "Wind: " + data.wind.speed + " MPH";
+      mainHumid.textContent = "Humidity: " + data.main.humidity + "%";
+      displayHeading.textContent = data.name;
+      var disIcon = document.createElement("img");
+      disIcon.setAttribute(
+        "src",
+        "http://openweathermap.org/img/w/" + data.weather[0].icon + ".png"
+      );
+      displayHeading.append(disIcon);
+    });
+});
