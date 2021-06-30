@@ -6,11 +6,14 @@ var mainHumid = document.getElementById("main-humid");
 var displayHeading = document.getElementById("display-heading");
 var history = document.getElementById("history");
 var hsDsp = document.getElementById("hs-dsp");
+var forcastBlock = document.querySelector(".block");
+
 currentCity = "wolcott";
 var apiBase = "https://api.openweathermap.org/data/2.5/weather?q=";
 var apiKey = "&units=imperial&appid=6260169909dd4d4630bd110c87fff970";
 
 // Fetched Data
+
 fetch(apiBase + currentCity + apiKey)
   .then(function (response) {
     return response.json();
@@ -50,24 +53,54 @@ var getResults = function () {
       mainWindEl.textContent = "Wind: " + data.wind.speed + " MPH";
       mainHumid.textContent = "Humidity: " + data.main.humidity + "%";
       displayHeading.textContent = data.name + "☁️";
+
+      oneCallApi(data.coord.lat, data.coord.lon);
     });
 };
+var oneCallApi = function (lat, lon) {
+  var oneCallBase =
+    "https://api.openweathermap.org/data/2.5/onecall?lat=" +
+    lat +
+    "&lon=" +
+    lon +
+    "&exclude=hourly,minutely,alerts" +
+    apiKey;
+  fetch(oneCallBase)
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (data) {
+      console.log(data);
+      getForcastResults(data);
+    });
+};
+///Function for setting 5 day forcast
+var getForcastResults = function (data) {
+
+  for (let i = 0; i < 4; i++) {
+  var forecastDateEl = document.createElement("h3");
+  var iconEl = document.createElement("img");
+  var tempEl = document.createElement("p");
+  var windEl = document.createElement("p");
+  var humidityEl = document.createElement("p");
+  var uvEl = document.createElement("p");
+  forecastDateEl.setAttribute("class", "forcast-date");
 
 
-// var getForcastResults = function () {
-//     fetch(apiBase + city + apiKey)
-//       .then(function (response) {
-//         return response.json();
-//       })
-//       .then(function (data) {
-//         console.log(data);
-//         mainTempEl.textContent = "Temp: " + data.main.temp + "° F";
-//         mainWindEl.textContent = "Wind: " + data.wind.speed + " MPH";
-//         mainHumid.textContent = "Humidity: " + data.main.humidity + "%";
-//         displayHeading.textContent = data.name + "☁️";
-//       });
-//   };
+  iconEl.setAttribute(
+    "src",
+    "http://openweathermap.org/img/w/" + data.daily[0].weather[0].icon + ".png"
+  );
 
+  forecastDateEl.textContent = "02/05/2021";
+  tempEl.textContent = data.daily[i].temp.day;
+  windEl.textContent = data.daily[i].wind_speed;
+  humidityEl.textContent = data.daily[i].humidity;
+  uvEl.textContent = data.daily[i].uvi;
+
+  forcastBlock.append(forecastDateEl, iconEl, tempEl, windEl, humidityEl, uvEl);
+}
+};
 
 var oldData = [];
 //save data to local storage
@@ -94,18 +127,3 @@ var loadData = function () {
 
 loadData();
 
-var getLocation = function() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition();
-      } else {
-          alert("Nothing to show!")
-      }
-     
-}
-  getLocation()
-
-  var showData = function(position){
-      console.log(position)
-
-  }
-  console.log( coords.latitude)
