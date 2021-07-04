@@ -47,7 +47,7 @@ input {
   outline: none;
 }
 
-.dsp{
+.dsp {
   padding: 5px;
   text-align: center;
   font-size: 25px;
@@ -64,6 +64,10 @@ input {
 .datadisplay p {
   padding-left: 8px;
 }
+.datadisplay span {
+  display: flex;
+  align-items: baseline;
+}
 .forecast {
   display: flex;
   justify-content: space-between;
@@ -76,8 +80,17 @@ input {
   padding: 5px;
   flex: 0 1 auto;
   border-radius: 5px;
-  text-align: center
+  text-align: center;
 }
-.forcast-date{
-    text-align: center;
+.forcast-date {
+  text-align: center;
+}
+
+#main-uv {
+  background-color: green;
+  margin-left: 8px;
+  font-weight: 600;
+}
+#main-date{
+  font-weight: 600;
 }
