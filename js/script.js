@@ -106,7 +106,7 @@ var oneCallApi = function (lat, lon) {
       return response.json();
     })
     .then(function (data) {
-      mainUviEl.textContent = "UV Index: " + data.current.uvi;
+      mainUviEl.textContent = data.current.uvi;
       console.log(data);
       getForcastResults(data);
     });
@@ -116,7 +116,7 @@ var oneCallApi = function (lat, lon) {
 var getForcastResults = function (data) {
   forcastArea.innerHTML = "";
   for (let i = 0; i < 5; i++) {
-    var castdate = moment().add(i, "days").format("MM/D/YYYY");
+    var castdate = moment().add(i+1, "days").format("MM/D/YYYY");
     console.log(castdate);
 
     var castBlock = document.createElement("div");
