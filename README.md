@@ -18,3 +18,7 @@ https://javantie.github.io/weather-app
 - - -
 ### Contribution:
 Made with ❤️ by Akeem Clarke
+
+- - -
+## ScreenShot 
+![alt text](./image/screenshot.png)
