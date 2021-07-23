@@ -86,11 +86,32 @@ input {
   text-align: center;
 }
 
-#main-uv {
+.green {
   background-color: green;
+  margin-left: 8px;
+  font-weight: 600;
+}
+.yellow{
+  background-color: yellow;
+  margin-left: 8px;
+  font-weight: 600;
+}
+.red{
+  background-color: red;
   margin-left: 8px;
   font-weight: 600;
 }
 #main-date{
   font-weight: 600;
+}
+
+.btn{
+  margin-top: 5px;
+  margin-left: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  background-color: rgba(106, 154, 226, 0.74);
+  border-radius: 5px;
+  outline: none;
+  border: 1px solid rgb(148, 148, 207);
 }

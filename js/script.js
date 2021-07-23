@@ -8,6 +8,7 @@ var displayHeading = document.getElementById("display-heading");
 var history = document.getElementById("history");
 var hsDsp = document.getElementById("hs-dsp");
 var forcastArea = document.querySelector(".forecast");
+var clearBtnEl = document.getElementById("clear-btn");
 currentCity = "wolcott";
 var apiBase = "https://api.openweathermap.org/data/2.5/weather?q=";
 var apiKey = "&units=imperial&appid=6260169909dd4d4630bd110c87fff970";
@@ -20,8 +21,6 @@ fetch(apiBase + currentCity + apiKey)
     return response.json();
   })
   .then(function (data) {
-    // console.log(data);
-
     //Current Location Weather Display
     mainTempEl.textContent = "Temp: " + data.main.temp + "° F";
     mainWindEl.textContent = "Wind: " + data.wind.speed + " MPH";
@@ -35,12 +34,11 @@ fetch(apiBase + currentCity + apiKey)
     );
     displayHeading.append(disIcon);
     showUV(data.coord.lat, data.coord.lon);
-});
+  });
 
 searchButtonEl.addEventListener("click", function (event) {
   city = inputField.value;
   event.preventDefault();
-  console.log(city);
   if (city === "") {
     alert("Please enter a valid city");
   } else {
@@ -56,7 +54,6 @@ var getResults = function () {
       return response.json();
     })
     .then(function (data) {
-      console.log(data);
       mainTempEl.textContent = "Temp: " + data.main.temp + "° F";
       mainWindEl.textContent = "Wind: " + data.wind.speed + " MPH";
       mainHumid.textContent = "Humidity: " + data.main.humidity + "%";
@@ -72,25 +69,28 @@ var getResults = function () {
     });
 };
 ///Funtion to show UVI for Current Day
-var showUV = function(lat, lon){
+var showUV = function (lat, lon) {
   var oneCallBase =
-  "https://api.openweathermap.org/data/2.5/onecall?lat=" +
-  lat +
-  "&lon=" +
-  lon +
-  "&exclude=hourly,minutely,alerts" +
-  apiKey;
-fetch(oneCallBase)
-  .then(function (response) {
-    return response.json();
-  })
-  .then(function (data) {
-    mainUviEl.textContent = data.current.uvi;
-    console.log(data);
-    getForcastResults(data);
-  });
-
-}
+    "https://api.openweathermap.org/data/2.5/onecall?lat=" +
+    lat +
+    "&lon=" +
+    lon +
+    "&exclude=hourly,minutely,alerts" +
+    apiKey;
+  fetch(oneCallBase)
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (data) {
+      mainUviEl.textContent = data.current.uvi;
+      getForcastResults(data);
+      if (data.current.uvi <= 3) {
+        mainUviEl.setAttribute("class", "green");
+      }else{
+        mainUviEl.setAttribute("class", "red");
+      }
+    });
+};
 
 //One call api with all the data both current and daily
 var oneCallApi = function (lat, lon) {
@@ -107,7 +107,6 @@ var oneCallApi = function (lat, lon) {
     })
     .then(function (data) {
       mainUviEl.textContent = data.current.uvi;
-      console.log(data);
       getForcastResults(data);
     });
 };
@@ -116,8 +115,9 @@ var oneCallApi = function (lat, lon) {
 var getForcastResults = function (data) {
   forcastArea.innerHTML = "";
   for (let i = 0; i < 5; i++) {
-    var castdate = moment().add(i+1, "days").format("MM/D/YYYY");
-    console.log(castdate);
+    var castdate = moment()
+      .add(i + 1, "days")
+      .format("MM/D/YYYY");
 
     var castBlock = document.createElement("div");
     castBlock.setAttribute("class", "block");
@@ -158,25 +158,26 @@ var saveSeachData = function () {
 //Load data from local storage
 var loadData = function () {
   oldData = JSON.parse(localStorage.getItem("search")) || [];
-  //console.log(oldData);
-  for (let i = 0; i < oldData.length; i++) {
+  for (var i = 0; i < oldData.length; i++) {
     search = document.createElement("p");
     search.setAttribute("class", "dsp");
     search.textContent = oldData[i].text;
     hsDsp.append(search);
+
+    search.addEventListener("click", function () {
+      val = this.textContent;
+      Results(val);
+    });
   }
 };
 loadData();
 
-// Code to search base on history
-hsDsp.addEventListener("click", function () {
-  newVal = oldData[0].text;
-  fetch(apiBase + newVal + apiKey)
+var Results = function (val) {
+  fetch(apiBase + val + apiKey)
     .then(function (response) {
       return response.json();
     })
     .then(function (data) {
-      //  console.log(data);
       mainTempEl.textContent = "Temp: " + data.main.temp + "° F";
       mainWindEl.textContent = "Wind: " + data.wind.speed + " MPH";
       mainHumid.textContent = "Humidity: " + data.main.humidity + "%";
@@ -187,5 +188,11 @@ hsDsp.addEventListener("click", function () {
         "http://openweathermap.org/img/w/" + data.weather[0].icon + ".png"
       );
       displayHeading.append(disIcon);
+
+      oneCallApi(data.coord.lat, data.coord.lon);
     });
+};
+
+clearBtnEl.addEventListener("click", function () {
+  localStorage.clear();
 });
